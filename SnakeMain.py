@@ -12,45 +12,48 @@ Colores_boton_inicio = (0, 127, 95)
 # Configurar dimensiones de la ventana
 Ancho_Pantalla = 700
 Alto_Pantalla = 600
+#OTROS COLORES
+negro=(0,0,0)
+blanco=(255,255,255)
 size = (Ancho_Pantalla, Alto_Pantalla)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Snake game") # Nombre de la interfaz
-sonido_boton = pygame.mixer.Sound("SonidoBoton.mp3") 
+sonido_boton = pygame.mixer.Sound("Snake_Kokoa/SonidoBoton.mp3") 
 # Cargar la imagen de fondo
-imagen_fondo = pygame.image.load("ImagenFondo.jpg")
+imagen_fondo = pygame.image.load("Snake_Kokoa/ImagenFondo.jpg")
 # Cargando imagen Manzana
-manzana = pygame.transform.scale(pygame.image.load("Manzana.png").convert_alpha(), (40, 35))
+manzana = pygame.transform.scale(pygame.image.load("Snake_Kokoa/manzana.png").convert_alpha(), (40, 35))
 # Cargando la imagen de la manzana dorada
-manzana_dorada = pygame.transform.scale(pygame.image.load("ManzanaDorada.png").convert_alpha(), (40, 35))
+manzana_dorada = pygame.transform.scale(pygame.image.load("Snake_Kokoa/ManzanaDorada.png").convert_alpha(), (40, 35))
 
 # Configurar el tamaño del cuadrado del patrón
 cell_size = 40
 cell_number = 20
 # Fuente para los botones (tanto de inicio Start como la pantalla gamee over)
 # use la siguiente implementación porque no tengo instlado esta fuenta, la descargue de google font :D
-fuente_nueva= "PressStart2P-Regular.ttf"
+fuente_nueva= "Snake_Kokoa/PressStart2P-Regular.ttf"
 tamanio = 25
 fuente= pygame.font.Font(fuente_nueva,tamanio)
 
 # Función para dibujar el botón con bordes redondeados
 def dibujando_boton(screen, text, rect, color, border_radius, font):
     pygame.draw.rect(screen, color, rect, border_radius=border_radius)
-    texto_superficie = font.render(text, True, WHITE)
+    texto_superficie = font.render(text, True, blanco)
     texto_rect = texto_superficie.get_rect(center=rect.center)
     screen.blit(texto_superficie, texto_rect)
 
 def dibujando_boton2(screen, text, rect, color, border_radius):
     pygame.draw.rect(screen, color, rect, border_radius=border_radius)
-    texto_superficie = tamanio.render(text, True, BLACK)
+    texto_superficie = tamanio.render(text, True, negro)
     texto_rect = texto_superficie.get_rect(center=rect.center)
     screen.blit(texto_superficie, texto_rect)
 
-imagen_game_over = pygame.image.load("game_over.jpg")
+imagen_game_over = pygame.image.load("Snake_Kokoa/game_over.jpg")
 imagen_game_over = pygame.transform.scale(imagen_game_over, (450, 180))  
 
 # Función para mostrar la pantalla de game over
 def mostrar_pantalla_game_over(screen):
-    screen.fill(BLACK)  # Fondo negro para toda la pantalla
+    screen.fill(negro)  # Fondo negro para toda la pantalla
 
     # Coordenadas centrales del VBox
     vbox_center_x = Ancho_Pantalla // 2
@@ -83,7 +86,7 @@ def mostrar_pantalla_game_over(screen):
 class MAIN:
     def __init__(self):
         self.snake = SNAKE()
-        self.fruit = FRUIT()
+        self.fruit = FRUTA()
         self.mostrar_mensaje = False
         self.apple_counter = 0  # Contador de manzanas
         self.golden_apple_active = False
@@ -98,9 +101,9 @@ class MAIN:
         if self.golden_apple_active:
             self.fruit.draw_golden_fruit()
         else:
-            self.fruit.draw_fruit()
-        self.snake.draw_snake()
-        self.draw_apple_counter()
+            self.fruit.dibujar_fruta()
+        self.snake.dbijuar_serpiente()
+        self.contador_manzanas()
 
     def check_collision(self):
         if self.fruit.pos == self.snake.body[0]:
@@ -136,7 +139,7 @@ class MAIN:
         # Dibujar la imagen de la manzana junto al contador
         screen.blit(manzana, (Ancho_Pantalla - 140, 10))
         # Dibujar el contador de manzanas
-        counter_surface = fuente.render(str(self.apple_counter), True, BLACK)
+        counter_surface = fuente.render(str(self.apple_counter), True, negro)
         screen.blit(counter_surface, (Ancho_Pantalla - 80, 15))
 
 # Definiendo una clase para la fruta que come la serpiente
@@ -161,7 +164,7 @@ class FRUTA:
 
 def rpedriducir_musica_gameover():
     pygame.mixer.music.pause()
-    game_over_sound = pygame.mixer.Sound("gameovermusic.mp3")  
+    game_over_sound = pygame.mixer.Sound("Snake_Kokoa/gameovermusic.mp3")  
     game_over_sound.play() 
 
 # Definiendo una clase para crear la estructura de la serpiente 
@@ -171,24 +174,24 @@ class SNAKE:
         self.direction = Vector2(1, 0)
         self.new_block = False
         # Cargando imagen para el HEAD serpiente
-        self.head_up = pygame.image.load("head_up.png").convert_alpha()
-        self.head_down = pygame.image.load("head_down.png").convert_alpha()
-        self.head_right = pygame.image.load("head_right.png").convert_alpha()
-        self.head_left = pygame.image.load("head_left.png").convert_alpha()
+        self.head_up = pygame.image.load("Snake_Kokoa/head_up.png").convert_alpha()
+        self.head_down = pygame.image.load("Snake_Kokoa/head_down.png").convert_alpha()
+        self.head_right = pygame.image.load("Snake_Kokoa/head_right.png").convert_alpha()
+        self.head_left = pygame.image.load("Snake_Kokoa/head_left.png").convert_alpha()
         # Cargando imagen para el TAIL de la serpiente
-        self.tail_up = pygame.image.load("tail_up.png").convert_alpha()
-        self.tail_down = pygame.image.load("tail_down.png").convert_alpha()
-        self.tail_right = pygame.image.load("tail_right.png").convert_alpha()
-        self.tail_left = pygame.image.load("tail_left.png").convert_alpha()
+        self.tail_up = pygame.image.load("Snake_Kokoa/tail_up.png").convert_alpha()
+        self.tail_down = pygame.image.load("Snake_Kokoa/tail_down.png").convert_alpha()
+        self.tail_right = pygame.image.load("Snake_Kokoa/tail_right.png").convert_alpha()
+        self.tail_left = pygame.image.load("Snake_Kokoa/tail_left.png").convert_alpha()
         # Cargando imagen para el BODY de la serpiente 
-        self.body_vertical = pygame.image.load("body_vertical.png").convert_alpha()
-        self.body_horizontal = pygame.image.load("body_horizontal.png").convert_alpha()
+        self.body_vertical = pygame.image.load("Snake_Kokoa/body_vertical.png").convert_alpha()
+        self.body_horizontal = pygame.image.load("Snake_Kokoa/body_horizontal.png").convert_alpha()
         #Carganndo imagen para el BODY de la serpiente
-        self.body_tr = pygame.image.load("body_topright.png").convert_alpha()
-        self.body_tl = pygame.image.load("body_topleft.png").convert_alpha()
-        self.body_br = pygame.image.load("body_bottomright.png").convert_alpha()
-        self.body_bl = pygame.image.load("body_bottomleft.png").convert_alpha()
-        self.crunch_sound = pygame.mixer.Sound("crunch.mp3")
+        self.body_tr = pygame.image.load("Snake_Kokoa/body_topright.png").convert_alpha()
+        self.body_tl = pygame.image.load("Snake_Kokoa/body_topleft.png").convert_alpha()
+        self.body_br = pygame.image.load("Snake_Kokoa/body_bottomright.png").convert_alpha()
+        self.body_bl = pygame.image.load("Snake_Kokoa/body_bottomleft.png").convert_alpha()
+        self.crunch_sound = pygame.mixer.Sound("Snake_Kokoa/crunch.mp3")
     # función que se encarga de dar sonido cuando la serpiente coma
     def play_crunch_sound(self):
         self.crunch_sound.play()
@@ -267,7 +270,7 @@ class SNAKE:
 
     def game_over(self):
         pygame.mixer.music.stop()  # Detener la música actual
-        game_over_sound = pygame.mixer.Sound("gameovermusic.mp3") 
+        game_over_sound = pygame.mixer.Sound("Snake_Kokoa/gameovermusic.mp3") 
         game_over_sound.play()  # Reproducir la nueva canción
 
         while True:
@@ -350,7 +353,7 @@ while running:
         segundos = int(elapsed_time % 60)
 
         # Renderizar el cronómetro
-        texto_Reloj = fuente.render(f"Time: {minutos:02}:{segundos:02}", True, BLACK)
+        texto_Reloj = fuente.render(f"Time: {minutos:02}:{segundos:02}", True, negro)
         screen.blit(texto_Reloj, (10, 10))
     else:
         # Dibujar el botón de "empezar" con bordes redondeados y fuente específica
