@@ -20,11 +20,11 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Snake game") # Nombre de la interfaz
 sonido_boton = pygame.mixer.Sound("Snake_Kokoa/SonidoBoton.mp3") 
 # Cargar la imagen de fondo
-imagen_fondo = pygame.image.load("Snake_Kokoa/ImagenFondo.jpg")
+imagen_fondo = pygame.image.load("Snake_Kokoa/Imagenes/ImagenFondo.jpg")
 # Cargando imagen Manzana
-manzana = pygame.transform.scale(pygame.image.load("Snake_Kokoa/manzana.png").convert_alpha(), (40, 35))
+manzana = pygame.transform.scale(pygame.image.load("Snake_Kokoa/Imagenes/manzana.png").convert_alpha(), (40, 35))
 # Cargando la imagen de la manzana dorada
-manzana_dorada = pygame.transform.scale(pygame.image.load("Snake_Kokoa/ManzanaDorada.png").convert_alpha(), (40, 35))
+manzana_dorada = pygame.transform.scale(pygame.image.load("Snake_Kokoa/Imagenes/ManzanaDorada.png").convert_alpha(), (40, 35))
 
 # Configurar el tamaño del cuadrado del patrón
 cell_size = 40
@@ -44,11 +44,11 @@ def dibujando_boton(screen, text, rect, color, border_radius, font):
 
 def dibujando_boton2(screen, text, rect, color, border_radius):
     pygame.draw.rect(screen, color, rect, border_radius=border_radius)
-    texto_superficie = tamanio.render(text, True, negro)
+    texto_superficie = fuente.render(text, True, negro)
     texto_rect = texto_superficie.get_rect(center=rect.center)
     screen.blit(texto_superficie, texto_rect)
 
-imagen_game_over = pygame.image.load("Snake_Kokoa/game_over.jpg")
+imagen_game_over = pygame.image.load("Snake_Kokoa/Imagenes/game_over.jpg")
 imagen_game_over = pygame.transform.scale(imagen_game_over, (450, 180))  
 
 # Función para mostrar la pantalla de game over
@@ -94,15 +94,16 @@ class MAIN:
 
     def update(self):
         self.snake.move_snake()
+        self.check_fail()
         self.check_collision()
         self.check_golden_apple_timer()
 
     def draw_elements(self):
         if self.golden_apple_active:
-            self.fruit.draw_golden_fruit()
+            self.fruit.dibujar_fruta_manza_dorada()
         else:
             self.fruit.dibujar_fruta()
-        self.snake.dbijuar_serpiente()
+        self.snake.dibujar_serpiente()
         self.contador_manzanas()
 
     def check_collision(self):
@@ -129,11 +130,11 @@ class MAIN:
     def deactivate_golden_apple(self):
         self.golden_apple_active = False
         self.fruit.randomize_position()
-
     def check_fail(self):
-        # Colisión con el cuerpo
-        if self.snake.body[0] in self.snake.body[1:]:
-            self.snake.game_over()
+        # verificamos si chocamos con nuesytro porpio cuerpo
+        for block in self.snake.body[1:]:
+            if block == self.snake.body[0]:
+                self.snake.game_over()
 
     def contador_manzanas(self):
         # Dibujar la imagen de la manzana junto al contador
@@ -171,32 +172,32 @@ def rpedriducir_musica_gameover():
 class SNAKE:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(6, 10), Vector2(7, 10)]
-        self.direction = Vector2(1, 0)
+        self.direction = Vector2(-1, 0)
         self.new_block = False
         # Cargando imagen para el HEAD serpiente
-        self.head_up = pygame.image.load("Snake_Kokoa/head_up.png").convert_alpha()
-        self.head_down = pygame.image.load("Snake_Kokoa/head_down.png").convert_alpha()
-        self.head_right = pygame.image.load("Snake_Kokoa/head_right.png").convert_alpha()
-        self.head_left = pygame.image.load("Snake_Kokoa/head_left.png").convert_alpha()
+        self.head_up = pygame.image.load("Snake_Kokoa/Imagenes/head_up.png").convert_alpha()
+        self.head_down = pygame.image.load("Snake_Kokoa/Imagenes/head_down.png").convert_alpha()
+        self.head_right = pygame.image.load("Snake_Kokoa/Imagenes/head_right.png").convert_alpha()
+        self.head_left = pygame.image.load("Snake_Kokoa/Imagenes/head_left.png").convert_alpha()
         # Cargando imagen para el TAIL de la serpiente
-        self.tail_up = pygame.image.load("Snake_Kokoa/tail_up.png").convert_alpha()
-        self.tail_down = pygame.image.load("Snake_Kokoa/tail_down.png").convert_alpha()
-        self.tail_right = pygame.image.load("Snake_Kokoa/tail_right.png").convert_alpha()
-        self.tail_left = pygame.image.load("Snake_Kokoa/tail_left.png").convert_alpha()
+        self.tail_up = pygame.image.load("Snake_Kokoa/Imagenes/tail_up.png").convert_alpha()
+        self.tail_down = pygame.image.load("Snake_Kokoa/Imagenes/tail_down.png").convert_alpha()
+        self.tail_right = pygame.image.load("Snake_Kokoa/Imagenes/tail_right.png").convert_alpha()
+        self.tail_left = pygame.image.load("Snake_Kokoa/Imagenes/tail_left.png").convert_alpha()
         # Cargando imagen para el BODY de la serpiente 
-        self.body_vertical = pygame.image.load("Snake_Kokoa/body_vertical.png").convert_alpha()
-        self.body_horizontal = pygame.image.load("Snake_Kokoa/body_horizontal.png").convert_alpha()
+        self.body_vertical = pygame.image.load("Snake_Kokoa/Imagenes/body_vertical.png").convert_alpha()
+        self.body_horizontal = pygame.image.load("Snake_Kokoa/Imagenes/body_horizontal.png").convert_alpha()
         #Carganndo imagen para el BODY de la serpiente
-        self.body_tr = pygame.image.load("Snake_Kokoa/body_topright.png").convert_alpha()
-        self.body_tl = pygame.image.load("Snake_Kokoa/body_topleft.png").convert_alpha()
-        self.body_br = pygame.image.load("Snake_Kokoa/body_bottomright.png").convert_alpha()
-        self.body_bl = pygame.image.load("Snake_Kokoa/body_bottomleft.png").convert_alpha()
+        self.body_tr = pygame.image.load("Snake_Kokoa/Imagenes/body_topright.png").convert_alpha()
+        self.body_tl = pygame.image.load("Snake_Kokoa/Imagenes/body_topleft.png").convert_alpha()
+        self.body_br = pygame.image.load("Snake_Kokoa/Imagenes/body_bottomright.png").convert_alpha()
+        self.body_bl = pygame.image.load("Snake_Kokoa/Imagenes/body_bottomleft.png").convert_alpha()
         self.crunch_sound = pygame.mixer.Sound("Snake_Kokoa/crunch.mp3")
     # función que se encarga de dar sonido cuando la serpiente coma
     def play_crunch_sound(self):
         self.crunch_sound.play()
 
-    def dbijuar_serpiente(self):
+    def dibujar_serpiente(self):
         self.update_head_graphics()
         self.update_tail_graphics()
         for index, block in enumerate(self.body):
@@ -267,6 +268,7 @@ class SNAKE:
 
     def add_block(self):
         self.new_block = True
+    
 
     def game_over(self):
         pygame.mixer.music.stop()  # Detener la música actual
