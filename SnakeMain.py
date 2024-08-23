@@ -170,6 +170,7 @@ def rpedriducir_musica_gameover():
 
 # Definiendo una clase para crear la estructura de la serpiente 
 class SNAKE:
+
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(6, 10), Vector2(7, 10)]
         self.direction = Vector2(-1, 0) # asegurarnos de cambiar esta parte para la verificacion de la colision 
@@ -298,7 +299,6 @@ class SNAKE:
 
 
 def play(): # funcion para cuando empiece 
-    pygame.display.set_caption("Snake") # cambiar el titulo de la pantalla principal
     # Creando una instancia de main
     main_game = MAIN()
     # Variables de control
@@ -342,6 +342,8 @@ def play(): # funcion para cuando empiece
         screen.fill((0,0,0))
         if  not game_started:
             screen.blit(imagen_fondo, [0, 0])
+            pygame.display.set_caption("Inciio") # cambiar el titulo de la pantalla principal
+
             dibujando_boton(screen, "Start", start_button_rect, Colores_boton_inicio, border_radius=35, font=fuente)
         else: 
             # Dibujar el patrón
@@ -353,6 +355,7 @@ def play(): # funcion para cuando empiece
                     else:
                         pygame.draw.rect(screen, Verde_oscuro, rect)
             main_game.update()
+            pygame.display.set_caption("Snake")
 
             # Calcular el tiempo transcurrido
             elapsed_time = time.time() - start_time
