@@ -91,9 +91,10 @@ class MAIN:
         self.apple_counter = 0  # Contador de manzanas
         self.golden_apple_active = False
         self.golden_apple_start_time = None
+        self.inmortalidad= False
 
     def update(self):
-        self.snake.move_snake()
+        self.snake.move_snake(self.inmortalidad)
         self.check_fail()
         self.check_collision()
         self.check_golden_apple_timer()
@@ -109,18 +110,24 @@ class MAIN:
     def check_collision(self):
         if self.fruit.pos == self.snake.body[0]:
             print("Snack")
+            if self.golden_apple_active:
+                self.inmortalidad= True
+                self.deactivate_golden_apple()
+            else:
+                self.apple_counter += 1
+                self.snake.add_block()
+                self.snake.play_crunch_sound()
+                if self.apple_counter == 10:
+                    self.activate_golden_apple()
             self.fruit.randomize_position()
-            self.snake.add_block()
-            self.apple_counter += 1
-            self.mostrar_mensaje = True
-            pygame.time.set_timer(pygame.USEREVENT, 2000)
-            self.snake.play_crunch_sound()
-            if self.apple_counter >= 15 and not self.golden_apple_active:
-                self.activate_golden_apple()
+            self.mostrar_mensaje =True
+            pygame.time.set_timer(pygame.USEREVENT,2000)
 
     def check_golden_apple_timer(self):
-        if self.golden_apple_active and time.time() - self.golden_apple_start_time > 10:
+        if self.golden_apple_active and (time.time() - self.golden_apple_start_time >15):
             self.deactivate_golden_apple()
+        if self.inmortalidad and  (time.time() - self.golden_apple_start_time >15):
+            self.inmortalidad= False
 
     def activate_golden_apple(self):
         self.golden_apple_active = True
@@ -130,11 +137,13 @@ class MAIN:
     def deactivate_golden_apple(self):
         self.golden_apple_active = False
         self.fruit.randomize_position()
+
     def check_fail(self):
+        if not self.inmortalidad:
         # verificamos si chocamos con nuesytro porpio cuerpo
-        for block in self.snake.body[1:]:
-            if block == self.snake.body[0]:
-                self.snake.game_over()
+            for block in self.snake.body[1:]:
+                if block == self.snake.body[0]:
+                    self.snake.game_over()
 
     def contador_manzanas(self):
         # Dibujar la imagen de la manzana junto al contador
@@ -250,7 +259,7 @@ class SNAKE:
             self.tail = self.tail_down
 
 
-    def move_snake(self):
+    def move_snake(self, inmortalidad):
         if self.new_block:
             body_copy = self.body[:]
             new_head = body_copy[0] + self.direction
@@ -262,10 +271,19 @@ class SNAKE:
             new_head = body_copy[0] + self.direction
             body_copy.insert(0, new_head)
             self.body = body_copy[:]        
-        
+        if inmortalidad:
+            if self.body[0].x < 0:
+                self.body[0].x = Ancho_Pantalla // cell_size -1
+            elif self.body[0].x >= Ancho_Pantalla // cell_size:
+                self.body[0].x=0
+            if self.body[0].y < 0:
+                self.body[0].y = Alto_Pantalla // cell_size -1
+            elif self.body[0].y >= Alto_Pantalla// cell_size:
+                self.body = 0
+        else:
         # Verificar límites de la ventana en caso de que choque con cualquiera dimension de la ventana 
-        if not (0 <= self.body[0].x < Ancho_Pantalla // cell_size) or not (0 <= self.body[0].y < Alto_Pantalla // cell_size):
-            self.game_over()
+            if not (0 <= self.body[0].x < Ancho_Pantalla // cell_size) or not (0 <= self.body[0].y < Alto_Pantalla // cell_size):
+                self.game_over()
 
     def add_block(self):
         self.new_block = True
