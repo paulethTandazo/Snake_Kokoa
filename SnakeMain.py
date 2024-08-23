@@ -287,10 +287,7 @@ class SNAKE:
                     if restart_button_rect.collidepoint(event.pos):
                         # Reiniciar el juego
                         main_game.__init__()
-                        # variable para el tiempo
-                        global start_time
-                        start_time= time.time
-                        return  # Salir del bucle y volver al juego
+                    
                     if quit_button_rect.collidepoint(event.pos):
                         pygame.quit()
                         sys.exit()
@@ -298,82 +295,78 @@ class SNAKE:
             pygame.time.Clock().tick(15)
 
 
-def play(): # funcion para cuando empiece 
-    # Creando una instancia de main
-    main_game = MAIN()
-    # Variables de control
-    running = True
-    game_started = False
-    start_time = 0
+# Creando una instancia de main
+main_game = MAIN()
+# Variables de control
+running = True
+game_started = False
+start_time = 0
+
     
     # Rectángulo del botón de "empezar" (más grande)
-    buoton_ancho = 235
-    button_alto = 95
-    start_button_rect = pygame.Rect(35, Alto_Pantalla - button_alto - 35, buoton_ancho, button_alto)
+buoton_ancho = 235
+button_alto = 95
+start_button_rect = pygame.Rect(35, Alto_Pantalla - button_alto - 35, buoton_ancho, button_alto)
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if start_button_rect.collidepoint(event.pos):
-                    sonido_boton.play()
-                    pygame.time.delay(1000)  # Retraso de 1 segundo (1000 milisegundos)
-                    game_started = True
-                    start_time = time.time()  # Iniciar el cronómetro
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if start_button_rect.collidepoint(event.pos):
+                sonido_boton.play()
+                pygame.time.delay(1000)  # Retraso de 1 segundo (1000 milisegundos)
+                game_started = True
+                start_time = time.time()  # Iniciar el cronómetro
                 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                if main_game.snake.direction.y != 1:  # Evitar moverse en la dirección opuesta
+                    main_game.snake.direction = Vector2(0, -1)
+            if event.key == pygame.K_RIGHT:
+                if main_game.snake.direction.x != -1:  # Evitar moverse en la dirección opuesta
+                    main_game.snake.direction = Vector2(1, 0)
+            if event.key == pygame.K_DOWN:
+                if main_game.snake.direction.y != -1:  # Evitar moverse en la dirección opuesta
+                    main_game.snake.direction = Vector2(0, 1)
+            if event.key == pygame.K_LEFT:
+                if main_game.snake.direction.x != 1:  # Evitar moverse en la dirección opuesta
+                    main_game.snake.direction = Vector2(-1, 0)
             
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    if main_game.snake.direction.y != 1:  # Evitar moverse en la dirección opuesta
-                        main_game.snake.direction = Vector2(0, -1)
-                if event.key == pygame.K_RIGHT:
-                    if main_game.snake.direction.x != -1:  # Evitar moverse en la dirección opuesta
-                        main_game.snake.direction = Vector2(1, 0)
-                if event.key == pygame.K_DOWN:
-                    if main_game.snake.direction.y != -1:  # Evitar moverse en la dirección opuesta
-                        main_game.snake.direction = Vector2(0, 1)
-                if event.key == pygame.K_LEFT:
-                    if main_game.snake.direction.x != 1:  # Evitar moverse en la dirección opuesta
-                        main_game.snake.direction = Vector2(-1, 0)
-            if event.type == pygame.USEREVENT:
-                main_game.mostrar_mensaje= False
-                pygame.time.set_timer(pygame.USEREVENT, 0)       
-        screen.fill((0,0,0))
-        if  not game_started:
-            screen.blit(imagen_fondo, [0, 0])
-            pygame.display.set_caption("Inciio") # cambiar el titulo de la pantalla principal
-
-            dibujando_boton(screen, "Start", start_button_rect, Colores_boton_inicio, border_radius=35, font=fuente)
-        else: 
-            # Dibujar el patrón
-            for x in range(0, Ancho_Pantalla, cell_size):
-                for y in range(0, Alto_Pantalla, cell_size):
-                    rect = pygame.Rect(x, y, cell_size, cell_size)
-                    if (x // cell_size + y // cell_size) % 2 == 0:
-                        pygame.draw.rect(screen, Verde_claro, rect)
-                    else:
-                        pygame.draw.rect(screen, Verde_oscuro, rect)
-            main_game.update()
-            pygame.display.set_caption("Snake")
-
-            # Calcular el tiempo transcurrido
-            elapsed_time = time.time() - start_time
-            minutos = int(elapsed_time // 60)
-            segundos = int(elapsed_time % 60)
-
-            # Renderizar el cronómetro
-            texto_Reloj = fuente.render(f"Time: {minutos:02}:{segundos:02}", True, negro)
-            screen.blit(texto_Reloj, (10, 10))
-
-            main_game.draw_elements()
-        
-        pygame.display.flip() 
-        pygame.time.Clock().tick(15)
-        
-
+        if event.type == pygame.USEREVENT:
+            main_game.mostrar_mensaje= False
+            pygame.time.set_timer(pygame.USEREVENT, 0)       
     
-play()
+    if  not game_started:
+        screen.blit(imagen_fondo, [0, 0])
+        pygame.display.set_caption("Bienvenido") 
+        dibujando_boton(screen, "Start", start_button_rect, Colores_boton_inicio, border_radius=35, font=fuente)
+    else: 
+        # Dibujar el patrón
+        for x in range(0, Ancho_Pantalla, cell_size):
+            for y in range(0, Alto_Pantalla, cell_size):
+                rect = pygame.Rect(x, y, cell_size, cell_size)
+                if (x // cell_size + y // cell_size) % 2 == 0:
+                    pygame.draw.rect(screen, Verde_claro, rect)
+                else:
+                    pygame.draw.rect(screen, Verde_oscuro, rect)
+        main_game.update()
+        pygame.display.set_caption("Snake") # cambiar el titulo de la pantalla principal
+
+        # Calcular el tiempo transcurrido
+        elapsed_time = time.time() - start_time
+        minutos = int(elapsed_time // 60)
+        segundos = int(elapsed_time % 60)
+
+        # Renderizar el cronómetro
+        texto_Reloj = fuente.render(f"Time: {minutos:02}:{segundos:02}", True, negro)
+        screen.blit(texto_Reloj, (10, 10))
+
+        main_game.draw_elements()
+        
+    pygame.display.flip() 
+    pygame.time.Clock().tick(15)
+        
 pygame.quit()
 sys.exit()
 
