@@ -287,6 +287,10 @@ class SNAKE:
                     if restart_button_rect.collidepoint(event.pos):
                         # Reiniciar el juego
                         main_game.__init__()
+                        global game_started,start_time
+                        game_started= False
+                        start_time=0
+                        return
                     
                     if quit_button_rect.collidepoint(event.pos):
                         pygame.quit()
@@ -307,7 +311,7 @@ start_time = 0
 buoton_ancho = 235
 button_alto = 95
 start_button_rect = pygame.Rect(35, Alto_Pantalla - button_alto - 35, buoton_ancho, button_alto)
-
+velocidad_snake=  10 # por default este valor
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -320,16 +324,16 @@ while running:
                 start_time = time.time()  # Iniciar el cronómetro
                 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_UP or event.key==pygame.K_w:
                 if main_game.snake.direction.y != 1:  # Evitar moverse en la dirección opuesta
                     main_game.snake.direction = Vector2(0, -1)
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_RIGHT or event.key==pygame.K_d:
                 if main_game.snake.direction.x != -1:  # Evitar moverse en la dirección opuesta
                     main_game.snake.direction = Vector2(1, 0)
-            if event.key == pygame.K_DOWN:
+            if event.key == pygame.K_DOWN or event.key==pygame.K_s:
                 if main_game.snake.direction.y != -1:  # Evitar moverse en la dirección opuesta
                     main_game.snake.direction = Vector2(0, 1)
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_LEFT or event.key==pygame.K_a:
                 if main_game.snake.direction.x != 1:  # Evitar moverse en la dirección opuesta
                     main_game.snake.direction = Vector2(-1, 0)
             
@@ -363,6 +367,10 @@ while running:
         screen.blit(texto_Reloj, (10, 10))
 
         main_game.draw_elements()
+        if main_game.golden_apple_active:
+            velocidad_snake=20
+        else:
+            velocidad_snake=10
         
     pygame.display.flip() 
     pygame.time.Clock().tick(15)
